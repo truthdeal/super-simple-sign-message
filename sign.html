@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MetaMask Sign Message</title>
+  </head>
+  <body>
+    <h1>Sign Message</h1>
+
+    <label for="message-input">Message:</label>
+    <input type="text" id="message-input" />
+
+    <button onclick="signMessage()">Sign Message</button>
+
+    <label for="signature-output">Signature:</label>
+    <textarea id="signature-output"></textarea>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+    <script>
+      async function signMessage() {
+        // Connect to MetaMask
+        if (typeof window.ethereum !== 'undefined') {
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          window.web3 = new Web3(window.ethereum);
+        } else {
+          alert('Please install MetaMask to use this feature');
+          return;
+        }
+
+        // Get the message to sign
+        const message = document.getElementById('message-input').value;
+
+        // Sign the message
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        const address = accounts[0];
+        const signature = await window.ethereum.request({
+          method: 'personal_sign',
+          params: [message, address],
+        });
+
+        // Display the signed message
+        document.getElementById('signature-output').value = signature;
+      }
+    </script>
+  </body>
+</html>
